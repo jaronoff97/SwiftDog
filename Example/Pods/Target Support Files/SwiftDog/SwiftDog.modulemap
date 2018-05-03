@@ -1,0 +1,6 @@
+framework module SwiftDog {
+  umbrella header "SwiftDog-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,6 +1,8 @@
 # OS X
 .DS_Store
 
+
+Example/datadog_config.plist
 # Xcode
 build/
 *.pbxuser

@@ -1,12 +1,15 @@
 use_frameworks!
+platform :ios, '9.3'
 
 target 'SwiftDog_Example' do
   pod 'SwiftDog', :path => '../'
 
-  target 'SwiftDog_Tests' do
-    inherit! :search_paths
 
+end
+
+target 'SwiftDog_Tests' do
+    pod 'SwiftDog', :path => '../'
+    
     pod 'Quick', '~> 1.2.0'
     pod 'Nimble', '~> 7.0.2'
-  end
 end

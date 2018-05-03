@@ -1,0 +1,27 @@
+{
+  "name": "SwiftDog",
+  "version": "0.1.0",
+  "summary": "A short description of SwiftDog.",
+  "description": "A Swift-y Datadog API!\nWelcome to the datadog swift API! You can now send metrics and events from a device!",
+  "homepage": "https://github.com/jacob.aronoff/SwiftDog",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "jacob.aronoff": "jacob.aronoff@datadoghq.com"
+  },
+  "source": {
+    "git": "https://github.com/jacob.aronoff/SwiftDog.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "SwiftDog/Classes/**/*",
+  "dependencies": {
+    "KeychainAccess": [
+      "~> 3.1"
+    ]
+  }
+}
