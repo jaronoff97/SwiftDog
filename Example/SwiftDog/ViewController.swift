@@ -27,7 +27,7 @@ class ViewController: UIViewController {
     
     @IBAction func sendEvent(_ sender: Any) {
         Datadog.dd.event.send(title: "This is a test event", text: "We can now send events from an iOS device!")
-        Datadog.dd.metric.send(metric: "ios.test.event.sent", points: 1)
+        Datadog.dd.metric.send(metric: "ios.test.event.sent", points: 1, type: .count(1))
     }
     
     @IBAction func sendMetric(_ sender: Any) {

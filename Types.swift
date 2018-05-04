@@ -39,7 +39,7 @@ extension Endpoint {
         let app_key = Datadog.dd.keychain[string: "app_key"]
         return URL(string: "https://"+url+self.endpoint + "?api_key=\(api_key!)&application_key=\(app_key!)")!
     }
-    internal mutating func _send(url_to_post: URL, json: Data, completion:((Error?) -> Void)?) throws {
+    internal func _send(url_to_post: URL, json: Data, completion:((Error?) -> Void)?) throws {
         guard json.count > 0, self.endpoint_data.count > 0 else {
             print("no data to send")
             return
@@ -70,7 +70,6 @@ extension Endpoint {
             }
         }
         task.resume()
-        self.endpoint_data = []
     }
     internal mutating func addTags(tags: [String]) {
         self.tags.append(contentsOf: tags)

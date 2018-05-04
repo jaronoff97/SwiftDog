@@ -25,6 +25,7 @@ public struct Event: Endpoint {
                 let json_data = try encoder.encode(event)
                 try self._send(url_to_post: url_to_post, json: json_data, completion: completion)
             }
+            self.endpoint_data = []
         } catch {
             completion?(error)
         }
