@@ -1,6 +1,6 @@
 # SwiftDog
 
-![./bits-swift-lightbg.svg](./bits-swift-lightbg.svg)
+![./bits-swift-lightbg.svg](./bits-swift-lightbg.svg =250x250)
 
 [![CI Status](https://img.shields.io/travis/jacob.aronoff/SwiftDog.svg?style=flat)](https://travis-ci.org/jacob.aronoff/SwiftDog)
 [![Version](https://img.shields.io/cocoapods/v/SwiftDog.svg?style=flat)](https://cocoapods.org/pods/SwiftDog)
