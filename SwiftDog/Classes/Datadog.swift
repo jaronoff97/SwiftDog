@@ -18,7 +18,7 @@ public class Datadog: API {
             self.metric.send(metric: "system.cpu.system", points: Float(cpu_usage["system"]!), host: self.host, tags: [], type: .gauge)
         }
         if let mem_usage = IOSAgent.current_MEM() {
-            self.metric.send(metric: "system.mem.used", points: Float(mem_usage), host: self.host, tags: [], type: .gauge)
+            self.metric.send(metric: "system.mem.used", points: mem_usage, host: self.host, tags: [], type: .gauge)
         }
         do {
             try self.metric._send(url: base_url) { (error: Error?) in
