@@ -54,6 +54,13 @@
                                     <action selector="sendTimedData:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="jBK-nF-AUL"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bits-swift-lightbg 12-46-03-93" translatesAutoresizingMaskIntoConstraints="NO" id="F4R-wl-GZm">
+                                <rect key="frame" x="59" y="319" width="256" height="256"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="256" id="h4J-Mt-wtE"/>
+                                    <constraint firstAttribute="width" constant="256" id="phH-od-huS"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -65,6 +72,8 @@
                             <constraint firstItem="nK0-j8-nkC" firstAttribute="top" secondItem="ZZe-3e-ks1" secondAttribute="bottom" constant="30" id="hJD-aI-xte"/>
                             <constraint firstItem="nK0-j8-nkC" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="iqN-OY-AUM"/>
                             <constraint firstItem="ZZe-3e-ks1" firstAttribute="top" secondItem="kbJ-P2-IZm" secondAttribute="bottom" constant="30" id="j0v-AH-UWO"/>
+                            <constraint firstItem="F4R-wl-GZm" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="lqK-fc-BUD"/>
+                            <constraint firstItem="F4R-wl-GZm" firstAttribute="top" secondItem="13J-hr-fGE" secondAttribute="bottom" constant="30" id="lyq-km-zK5"/>
                             <constraint firstItem="kbJ-P2-IZm" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="8" id="pPo-t4-dma"/>
                             <constraint firstItem="ZZe-3e-ks1" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="zIZ-8D-Qrd"/>
                         </constraints>
@@ -75,6 +84,10 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="60" y="31.934032983508249"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="bits-swift-lightbg 12-46-03-93" width="416" height="416"/>
+    </resources>
 </document>
