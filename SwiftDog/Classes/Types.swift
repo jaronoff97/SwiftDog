@@ -84,7 +84,6 @@ extension Endpoint {
         }
     }
 }
-
 enum DatadogAPIError: Error {
     case keyNotSet(String)
     case URLNotCreated(String)

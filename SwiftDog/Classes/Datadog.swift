@@ -11,6 +11,7 @@ public class Datadog: API {
     private var previous_wifi_sent: UInt32 = 0
     private var previous_wifi_received: UInt32 = 0
     internal let host = UIDevice.current.identifierForVendor!.uuidString
+    internal let model = UIDevice.current.model
     
     @objc private func sendData() {
         print("Sending metrics to the Datadog API.")
@@ -27,6 +28,7 @@ public class Datadog: API {
             self.metric.send(metric: "system.net.bytes_sent", points: Float(data_usage_info.wifiReceived - self.previous_wifi_received), host: self.host, tags: [], type: Metric.MetricData.MetricType.rate(Float(interval_seconds)))
             self.metric.send(metric: "system.net.bytes_rcvd", points: Float(data_usage_info.wifiSent - self.previous_wifi_sent), host: self.host, tags: [], type: Metric.MetricData.MetricType.rate(Float(interval_seconds)))
         }
+        self.metric.send(metric: "ios.device.battery.level", points: IOSAgent.get_battery_level())
         self.previous_wifi_sent = data_usage_info.wifiSent
         self.previous_wifi_received = data_usage_info.wifiReceived
         
@@ -72,8 +74,8 @@ public class Datadog: API {
         } catch {
             fatalError(error.localizedDescription)
         }
-        self.metric.addTags(tags: ["agent:ios"])
-//        self.event.addTags(tags: ["host:ios_device1"])
+        self.metric.addTags(tags: ["agent:ios", "model:\(IOSAgent.modelIdentifier())"])
+        self.event.addTags(tags: ["agent:ios", "model:\(IOSAgent.modelIdentifier())"])
         self.timer = Timer.scheduledTimer(timeInterval: self.interval_seconds, target: self, selector: #selector(Datadog.sendData), userInfo: nil, repeats: true)
     }
     

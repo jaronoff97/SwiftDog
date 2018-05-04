@@ -29,6 +29,13 @@ public struct IOSAgent {
     private static let wwanInterfacePrefix = "pdp_ip"
     private static let wifiInterfacePrefix = "en"
     
+    internal static func modelIdentifier() -> String {
+        if let simulatorModelIdentifier = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] { return simulatorModelIdentifier }
+        var sysinfo = utsname()
+        uname(&sysinfo) // ignore return value
+        return String(bytes: Data(bytes: &sysinfo.machine, count: Int(_SYS_NAMELEN)), encoding: .ascii)!.trimmingCharacters(in: .controlCharacters)
+    }
+    
     internal static func getDataUsage() -> DataUsageInfo {
         var interfaceAddresses: UnsafeMutablePointer<ifaddrs>? = nil
         
@@ -76,6 +83,13 @@ public struct IOSAgent {
         }
         
         return dataUsageInfo
+    }
+    
+    internal static func get_battery_level() -> Float {
+        if !UIDevice.current.isBatteryMonitoringEnabled {
+            UIDevice.current.isBatteryMonitoringEnabled = true
+        }
+        return UIDevice.current.batteryLevel
     }
 
     
