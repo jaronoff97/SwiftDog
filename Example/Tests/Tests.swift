@@ -10,7 +10,7 @@ class MetricSpec: QuickSpec {
             context("can send different kinds of metrics") {
                 let m: Metric.MetricData = Metric.MetricData(host: nil, tags: [], metric_name:"test.metric", type: Metric.MetricData.MetricType.gauge, points: [DataPoint(timestamp: TimeInterval(1525377826.2537289), value: 1001.1)])
                 it("can create a basic metric") {
-                    expect(m.metric_name == "test.metric").to(equal(true))
+                    expect(m.metric_name).to(equal("test.metric"))
                 }
                 it("can serialize to json") {
                     let encoder = JSONEncoder()
@@ -38,13 +38,25 @@ class MetricSpec: QuickSpec {
                         print("should never get here")
                     }
                 }
-                it("can add multiple tags after metric creation") {
+            }
+        }
+    }
+}
+
+class EventSpec: QuickSpec {
+    override func spec() {
+        describe("test event creation") {
+            context("can send different kinds of metrics") {
+                let e: Event.EventData = Event.EventData(host: "", tags:[], title: "test title", text: "test text", date_happened: 1525412871, priority: .normal, alert_type: .info, aggregation_key: nil, source_type_name: nil)
+                it("can create a basic metric") {
+                    expect(e.title).to(equal("test title"))
+                }
+                it("can serialize to json") {
                     let encoder = JSONEncoder()
-                    Datadog.dd.metric.addTags(tags: ["wow:tag"])
                     do {
-                        let jsonData = try encoder.encode(Datadog.dd.metric)
+                        let jsonData = try encoder.encode(e)
                         let jsonString = String(data: jsonData, encoding: .utf8)
-                        expect(jsonString!).to(equal("{\"series\":[{\"points\":[[1525377826.2537289,1]],\"tags\":[\"test:1\",\"wow:tag\"],\"host\":null,\"type\":\"gauge\",\"metric\":\"test.metric1\"},{\"points\":[[1525377828.2537289,2]],\"interval\":10,\"tags\":[\"test:2\",\"wow:tag\"],\"host\":\"device:fun_ios\",\"type\":\"rate\",\"metric\":\"test.metric2\"},{\"points\":[[1525377820.2537289,3]],\"interval\":100,\"tags\":[\"test:3\",\"wow:tag\"],\"host\":\"device:another_device\",\"type\":\"count\",\"metric\":\"test.metric3\"}]}"))
+                        expect(jsonString!).to(equal("{\"aggregation_key\":null,\"source_type_name\":null,\"title\":\"test title\",\"host\":\"\",\"alert_type\":\"info\",\"text\":\"test text\",\"priority\":\"normal\",\"tags\":[],\"date_happened\":1525412871}"))
                     } catch {
                         print("should never get here")
                     }
@@ -53,3 +65,4 @@ class MetricSpec: QuickSpec {
         }
     }
 }
+

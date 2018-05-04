@@ -11,7 +11,7 @@ public struct Event: Endpoint {
     public typealias EndpointDataType = EventData
     public var endpoint: String = "events"
     public var tags: [String] = []
-    private var event_data = [Event.EventData]()
+    public var endpoint_data = [Event.EventData]()
     
     private init() {
         
@@ -21,7 +21,7 @@ public struct Event: Endpoint {
         let url_to_post = try self.create_url(url: url)
         let encoder = JSONEncoder()
         do {
-            for event in self.event_data {
+            for event in self.endpoint_data {
                 let json_data = try encoder.encode(event)
                 try self._send(url_to_post: url_to_post, json: json_data, completion: completion)
             }
@@ -30,15 +30,9 @@ public struct Event: Endpoint {
         }
     }
     
-    public mutating func send(series: [EndpointDataType]) {
-        event_data.append(contentsOf: series)
+    public mutating func send(host: String? = nil, tags:[String] = [], title: String, text: String, date_happened: Int = Date.currentDate(), priority: EventPriority = .normal, alert_type: AlertType = .info, aggregation_key: String? = nil, source_type_name: String? = nil) {
+        self.send(series: [EventData(host: host, tags: tags, title: title, text: text, date_happened: date_happened, priority: priority, alert_type: alert_type, aggregation_key: aggregation_key, source_type_name: source_type_name)])
     }
-    
-    
-    public mutating func addTags(tags: [String]) {
-        self.tags.append(contentsOf: tags)
-    }
-    
     
     public struct EventData: DataType {
         private enum CodingKeys: String, CodingKey {
@@ -74,7 +68,7 @@ public struct Event: Endpoint {
         
         public func encode(to encoder: Encoder) throws {
             var event_data = encoder.container(keyedBy: EventData.CodingKeys.self)
-            try event_data.encode(self.host, forKey: .host)
+            try event_data.encodeIfPresent(self.host, forKey: .host)
             try event_data.encode(self.tags, forKey: .tags)
             try event_data.encode(self.title, forKey: .title)
             try event_data.encode(self.text, forKey: .text)

@@ -11,6 +11,9 @@ public extension Date {
     public static func currentTimestamp() -> TimeInterval {
         return Date().timeIntervalSince1970
     }
+    public static func currentDate() -> Int {
+        return Int(Date.currentTimestamp())
+    }
 }
 
 internal protocol API {
@@ -27,7 +30,7 @@ public protocol Endpoint {
     associatedtype EndpointDataType: DataType
     var endpoint: String { get }
     var tags: [String] { get set }
-    mutating func send(series: [EndpointDataType])
+    var endpoint_data: [EndpointDataType] { get set }
 }
 
 extension Endpoint {
@@ -58,6 +61,17 @@ extension Endpoint {
             }
         }
         task.resume()
+    }
+    internal mutating func addTags(tags: [String]) {
+        self.tags.append(contentsOf: tags)
+    }
+    
+    public mutating func send(series: [EndpointDataType]) {
+        _ = series.map { (item: EndpointDataType) in
+            var it = item
+            it.tags.append(contentsOf: self.tags)
+            endpoint_data.append(it)
+        }
     }
 }
 

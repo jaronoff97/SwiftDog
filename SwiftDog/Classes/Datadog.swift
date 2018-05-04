@@ -21,7 +21,6 @@ public class Datadog: API {
         
     }
     
-    
     private func get_credentials_from_plist() throws {
         keychain["api_key"] = nil
         keychain["app_key"] = nil
@@ -54,8 +53,8 @@ public class Datadog: API {
         } catch {
             fatalError(error.localizedDescription)
         }
-        self.metric.addTags(tags: ["host:ios_device1"])
-        self.event.addTags(tags: ["host:ios_device1"])
+//        self.metric.addTags(tags: ["host:ios_device1"])
+//        self.event.addTags(tags: ["host:ios_device1"])
         self.timer = Timer.scheduledTimer(timeInterval: self.interval_seconds, target: self, selector: #selector(Datadog.sendData), userInfo: nil, repeats: true)
     }
     

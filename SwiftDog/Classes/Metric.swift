@@ -7,10 +7,11 @@
 
 
 public struct Metric: Endpoint, Encodable {
+    
     static let metric = Metric()
     public typealias EndpointDataType = MetricData
     public var endpoint: String = "series"
-    var metric_data = [Metric.MetricData]()
+    public var endpoint_data = [Metric.MetricData]()
     public var tags: [String] = []
     
     private enum SeriesCodingKeys: String, CodingKey {
@@ -19,7 +20,7 @@ public struct Metric: Endpoint, Encodable {
     
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: SeriesCodingKeys.self)
-        try container.encode(metric_data, forKey: .series)
+        try container.encode(endpoint_data, forKey: .series)
     }
     
     private init() {
@@ -28,38 +29,13 @@ public struct Metric: Endpoint, Encodable {
     
     internal mutating func _send(url: String, completion:((Error?) -> Void)?) throws {
         let url_to_post = try self.create_url(url: url)
-        var request = URLRequest(url: url_to_post)
-        request.httpMethod = "POST"
-        var headers = request.allHTTPHeaderFields ?? [:]
-        headers["Content-Type"] = "application/json"
-        request.allHTTPHeaderFields = headers
-        
         let encoder = JSONEncoder()
         do {
             let json_data = try encoder.encode(self)
-            request.httpBody = json_data
+            try self._send(url_to_post: url_to_post, json: json_data, completion: completion)
         } catch {
             completion?(error)
         }
-        let config = URLSessionConfiguration.default
-        let session = URLSession(configuration: config)
-        let task = session.dataTask(with: request) { (responseData, response, responseError) in
-            guard responseError == nil else {
-                completion?(responseError!)
-                return
-            }
-            // APIs usually respond with the data you just sent in your POST request
-            if let data = responseData, let utf8Representation = String(data: data, encoding: .utf8) {
-                print("response: ", utf8Representation)
-            } else {
-                print("no readable data received in response")
-            }
-        }
-        task.resume()
-    }
-    
-    public mutating func send(series: [EndpointDataType]) {
-        metric_data.append(contentsOf: series)
     }
     
     public mutating func send(metric: String, points: [DataPoint], host: String? = nil, tags: [String] = [], type: MetricData.MetricType = .gauge) {
@@ -73,15 +49,6 @@ public struct Metric: Endpoint, Encodable {
     public mutating func send(metric: String, points: DataPoint, host: String? = nil, tags: [String] = [], type: MetricData.MetricType = .gauge) {
         self.send(series: [MetricData(host: host, tags: tags, metric_name: metric, type: type, points: [points])])
     }
-    
-    public mutating func addTags(tags: [String]) {
-        metric_data = metric_data.map { (metric) in
-            var new_metric = metric
-            new_metric.tags.append(contentsOf: tags)
-            return new_metric
-        }
-    }
-    
     
     public struct MetricData: DataType {
         private enum CodingKeys: String, CodingKey {
