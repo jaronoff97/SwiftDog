@@ -8,7 +8,9 @@ public class Datadog: API {
     private var timer: Timer = Timer()
     internal let keychain = Keychain(service: "api.datadoghq.com")
     public static let dd = Datadog()
-    let host = UIDevice.current.identifierForVendor!.uuidString
+    private var previous_wifi_sent: UInt32 = 0
+    private var previous_wifi_received: UInt32 = 0
+    internal let host = UIDevice.current.identifierForVendor!.uuidString
     
     @objc private func sendData() {
         print("Sending metrics to the Datadog API.")
@@ -20,10 +22,21 @@ public class Datadog: API {
         if let mem_usage = IOSAgent.current_MEM() {
             self.metric.send(metric: "system.mem.used", points: mem_usage, host: self.host, tags: [], type: .gauge)
         }
+        let data_usage_info = IOSAgent.getDataUsage()
+        if previous_wifi_received != 0 || previous_wifi_sent != 0 {
+            self.metric.send(metric: "system.net.bytes_sent", points: Float(data_usage_info.wifiReceived - self.previous_wifi_received), host: self.host, tags: [], type: Metric.MetricData.MetricType.rate(Float(interval_seconds)))
+            self.metric.send(metric: "system.net.bytes_rcvd", points: Float(data_usage_info.wifiSent - self.previous_wifi_sent), host: self.host, tags: [], type: Metric.MetricData.MetricType.rate(Float(interval_seconds)))
+        }
+        self.previous_wifi_sent = data_usage_info.wifiSent
+        self.previous_wifi_received = data_usage_info.wifiReceived
+        
         do {
             try self.metric._send(url: base_url) { (error: Error?) in
                 print(error!)
             }
+            try self.event._send(url: base_url, completion: { (error: Error?) in
+                print(error!)
+            })
         } catch {
             fatalError(error.localizedDescription)
         }

@@ -20,8 +20,58 @@
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SwiftDog Demo!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kbJ-P2-IZm">
+                                <rect key="frame" x="125" y="28" width="125" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZZe-3e-ks1">
+                                <rect key="frame" x="132" y="79" width="111" height="30"/>
+                                <state key="normal" title="Send Test Event"/>
+                                <connections>
+                                    <action selector="sendEvent:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="hpE-RF-ITL"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="idm-yg-6dw">
+                                <rect key="frame" x="87" y="199" width="201" height="30"/>
+                                <state key="normal" title="Send metric with above value"/>
+                                <connections>
+                                    <action selector="sendMetric:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="QAt-gE-DH1"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Test Value" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="nK0-j8-nkC">
+                                <rect key="frame" x="144" y="139" width="87.5" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="13J-hr-fGE">
+                                <rect key="frame" x="134" y="259" width="107" height="30"/>
+                                <state key="normal" title="Time a function"/>
+                                <connections>
+                                    <action selector="sendTimedData:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="jBK-nF-AUL"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="kbJ-P2-IZm" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="Tw8-HQ-5iC"/>
+                            <constraint firstItem="13J-hr-fGE" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="VpN-3L-Kuv"/>
+                            <constraint firstItem="idm-yg-6dw" firstAttribute="top" secondItem="nK0-j8-nkC" secondAttribute="bottom" constant="30" id="akx-XQ-8Xb"/>
+                            <constraint firstItem="13J-hr-fGE" firstAttribute="top" secondItem="idm-yg-6dw" secondAttribute="bottom" constant="30" id="eqL-uk-olS"/>
+                            <constraint firstItem="idm-yg-6dw" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="f06-TP-28J"/>
+                            <constraint firstItem="nK0-j8-nkC" firstAttribute="top" secondItem="ZZe-3e-ks1" secondAttribute="bottom" constant="30" id="hJD-aI-xte"/>
+                            <constraint firstItem="nK0-j8-nkC" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="iqN-OY-AUM"/>
+                            <constraint firstItem="ZZe-3e-ks1" firstAttribute="top" secondItem="kbJ-P2-IZm" secondAttribute="bottom" constant="30" id="j0v-AH-UWO"/>
+                            <constraint firstItem="kbJ-P2-IZm" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="8" id="pPo-t4-dma"/>
+                            <constraint firstItem="ZZe-3e-ks1" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="zIZ-8D-Qrd"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="metricValue" destination="nK0-j8-nkC" id="hTN-NG-wqD"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>

@@ -7,13 +7,79 @@
 
 import Foundation
 
+internal struct DataUsageInfo {
+    var wifiReceived: UInt32 = 0
+    var wifiSent: UInt32 = 0
+    var wirelessWanDataReceived: UInt32 = 0
+    var wirelessWanDataSent: UInt32 = 0
+    
+    mutating func updateInfoByAdding(info: DataUsageInfo) {
+        wifiSent += info.wifiSent
+        wifiReceived += info.wifiReceived
+        wirelessWanDataSent += info.wirelessWanDataSent
+        wirelessWanDataReceived += info.wirelessWanDataReceived
+    }
+}
+
 public struct IOSAgent {
     static let count:natural_t = mach_msg_type_number_t(MemoryLayout<host_cpu_load_info>.size / MemoryLayout<integer_t>.size)
     static let machHost:mach_port_t = mach_host_self()
     
     private static var previous_info: host_cpu_load_info = host_cpu_load_info()
+    private static let wwanInterfacePrefix = "pdp_ip"
+    private static let wifiInterfacePrefix = "en"
     
-    public static func current_MEM() -> Float? {
+    internal static func getDataUsage() -> DataUsageInfo {
+        var interfaceAddresses: UnsafeMutablePointer<ifaddrs>? = nil
+        
+        var dataUsageInfo = DataUsageInfo()
+        
+        guard getifaddrs(&interfaceAddresses) == 0 else { return dataUsageInfo }
+        
+        var pointer = interfaceAddresses
+        while pointer != nil {
+            guard let info = IOSAgent.getDataUsageInfo(from: pointer!) else {
+                pointer = pointer!.pointee.ifa_next
+                continue
+            }
+            dataUsageInfo.updateInfoByAdding(info: info)
+            pointer = pointer!.pointee.ifa_next
+        }
+        
+        freeifaddrs(interfaceAddresses)
+        
+        return dataUsageInfo
+    }
+    
+    private static func getDataUsageInfo(from infoPointer: UnsafeMutablePointer<ifaddrs>) -> DataUsageInfo? {
+        let pointer = infoPointer
+        
+        let name: String! = String(cString: infoPointer.pointee.ifa_name)
+        let addr = pointer.pointee.ifa_addr.pointee
+        guard addr.sa_family == UInt8(AF_LINK) else { return nil }
+        
+        return dataUsageInfo(from: pointer, name: name)
+    }
+    
+    private static func dataUsageInfo(from pointer: UnsafeMutablePointer<ifaddrs>, name: String) -> DataUsageInfo {
+        var networkData: UnsafeMutablePointer<if_data>? = nil
+        var dataUsageInfo = DataUsageInfo()
+        
+        if name.hasPrefix(IOSAgent.wifiInterfacePrefix) {
+            networkData = unsafeBitCast(pointer.pointee.ifa_data, to: UnsafeMutablePointer<if_data>.self)
+            dataUsageInfo.wifiSent += networkData?.pointee.ifi_obytes ?? 0
+            dataUsageInfo.wifiReceived += networkData?.pointee.ifi_ibytes ?? 0
+        } else if name.hasPrefix(IOSAgent.wwanInterfacePrefix) {
+            networkData = unsafeBitCast(pointer.pointee.ifa_data, to: UnsafeMutablePointer<if_data>.self)
+            dataUsageInfo.wirelessWanDataSent += networkData?.pointee.ifi_obytes ?? 0
+            dataUsageInfo.wirelessWanDataReceived += networkData?.pointee.ifi_ibytes ?? 0
+        }
+        
+        return dataUsageInfo
+    }
+
+    
+    internal static func current_MEM() -> Float? {
         
         var taskInfo = mach_task_basic_info()
         var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size)/4
@@ -34,7 +100,7 @@ public struct IOSAgent {
         
     }
     
-    public static func current_CPU() -> [String: Double]? {
+    internal static func current_CPU() -> [String: Double]? {
         var count:natural_t = IOSAgent.count
         var info:host_cpu_load_info = host_cpu_load_info()
         let result:kern_return_t = withUnsafeMutablePointer(to: &info) {
