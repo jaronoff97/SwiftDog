@@ -97,8 +97,8 @@ public struct Metric: Endpoint, Encodable {
                 fixed_points.append([point.0, Double(point.1)])
             }
             try series_data.encode(fixed_points, forKey: CodingKeys.points)
-            try series_data.encode(self.host, forKey: .host)
-            try series_data.encode(self.tags, forKey: .tags)
+            try series_data.encodeIfPresent(self.host, forKey: .host)
+            try series_data.encodeIfPresent(self.tags.count == 0 ? nil : self.tags, forKey: .tags)
             
         }
     }

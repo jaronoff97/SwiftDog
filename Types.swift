@@ -39,7 +39,11 @@ extension Endpoint {
         let app_key = Datadog.dd.keychain[string: "app_key"]
         return URL(string: "https://"+url+self.endpoint + "?api_key=\(api_key!)&application_key=\(app_key!)")!
     }
-    internal func _send(url_to_post: URL, json: Data, completion:((Error?) -> Void)?) throws {
+    internal mutating func _send(url_to_post: URL, json: Data, completion:((Error?) -> Void)?) throws {
+        guard json.count > 0, self.endpoint_data.count > 0 else {
+            print("no data to send")
+            return
+        }
         var request = URLRequest(url: url_to_post)
         request.httpMethod = "POST"
         var headers = request.allHTTPHeaderFields ?? [:]
@@ -54,13 +58,19 @@ extension Endpoint {
                 return
             }
             // APIs usually respond with the data you just sent in your POST request
-            if let data = responseData, let utf8Representation = String(data: data, encoding: .utf8) {
-                print("response: ", utf8Representation)
+            if let data = responseData, let _ = String(data: data, encoding: .utf8) {
+                do {
+                    let response_dict = try JSONSerialization.jsonObject(with: data, options: []) as! [String: AnyObject]
+                    print("response: \(String(describing: response_dict["status"]))")
+                } catch {
+                    completion?(error)
+                }
             } else {
                 print("no readable data received in response")
             }
         }
         task.resume()
+        self.endpoint_data = []
     }
     internal mutating func addTags(tags: [String]) {
         self.tags.append(contentsOf: tags)

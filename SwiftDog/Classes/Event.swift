@@ -30,7 +30,7 @@ public struct Event: Endpoint {
         }
     }
     
-    public mutating func send(host: String? = nil, tags:[String] = [], title: String, text: String, date_happened: Int = Date.currentDate(), priority: EventPriority = .normal, alert_type: AlertType = .info, aggregation_key: String? = nil, source_type_name: String? = nil) {
+    public mutating func send(host: String? = nil, tags:[String] = [], title: String, text: String, date_happened: Int = Date.currentDate(), priority: EventData.EventPriority = .normal, alert_type: EventData.AlertType = .info, aggregation_key: String? = nil, source_type_name: String? = nil) {
         self.send(series: [EventData(host: host, tags: tags, title: title, text: text, date_happened: date_happened, priority: priority, alert_type: alert_type, aggregation_key: aggregation_key, source_type_name: source_type_name)])
     }
     
@@ -69,14 +69,14 @@ public struct Event: Endpoint {
         public func encode(to encoder: Encoder) throws {
             var event_data = encoder.container(keyedBy: EventData.CodingKeys.self)
             try event_data.encodeIfPresent(self.host, forKey: .host)
-            try event_data.encode(self.tags, forKey: .tags)
+            try event_data.encodeIfPresent(self.tags.count == 0 ? nil : self.tags, forKey: .tags)
             try event_data.encode(self.title, forKey: .title)
             try event_data.encode(self.text, forKey: .text)
             try event_data.encode(self.date_happened, forKey: .date_happened)
             try event_data.encode(self.priority.rawValue, forKey: CodingKeys.priority)
             try event_data.encode(self.alert_type.rawValue, forKey: CodingKeys.alert_type)
-            try event_data.encode(self.aggregation_key, forKey: .aggregation_key)
-            try event_data.encode(self.source_type_name, forKey: .source_type_name)
+            try event_data.encodeIfPresent(self.aggregation_key, forKey: .aggregation_key)
+            try event_data.encodeIfPresent(self.source_type_name, forKey: .source_type_name)
         }
     }
     
