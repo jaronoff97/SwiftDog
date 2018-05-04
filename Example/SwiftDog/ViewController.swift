@@ -47,6 +47,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
             return (fib(n-1) + fib(n-2))
         }
     }
+    @IBAction func resetCredentials(_ sender: Any) {
+        Datadog.dd.resetCredentials()
+    }
     
     @IBAction func sendTimedData(_ sender: Any) {
         let start = DispatchTime.now()

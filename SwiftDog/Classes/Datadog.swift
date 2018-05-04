@@ -67,6 +67,17 @@ public class Datadog: API {
         }
     }
     
+    public func resetCredentials() {
+        keychain["api_key"] = nil
+        keychain["app_key"] = nil
+        do {
+            try get_credentials_from_plist()
+        } catch {
+            print(error)
+        }
+        
+    }
+    
     
     private init() {
         do {

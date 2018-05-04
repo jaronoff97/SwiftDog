@@ -19,6 +19,7 @@ public extension Date {
 internal protocol API {
     var base_url: String { get }
     var interval_seconds: TimeInterval { get set }
+    func resetCredentials()
 }
 
 public protocol DataType: Encodable {
