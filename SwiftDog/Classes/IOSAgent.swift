@@ -118,6 +118,8 @@ public struct IOSAgent {
         let idleDiff = Double(info.cpu_ticks.2 - previous_info.cpu_ticks.2)
         let niceDiff = Double(info.cpu_ticks.3 - previous_info.cpu_ticks.3)
         
+        previous_info = info
+        
         let totalTicks = sysDiff + userDiff + niceDiff + idleDiff
         
         let sys  = sysDiff  / totalTicks * 100.0
