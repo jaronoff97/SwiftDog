@@ -4,6 +4,7 @@ public class Datadog: API {
     internal var base_url: String = "api.datadoghq.com/api/v1/"
     internal var interval_seconds: TimeInterval = TimeInterval(3)
     public var metric: Metric = Metric.metric
+    public var event: Event = Event.event
     private var timer: Timer = Timer()
     internal let keychain = Keychain(service: "api.datadoghq.com")
     public static let dd = Datadog()
@@ -11,7 +12,7 @@ public class Datadog: API {
     @objc private func sendData() {
         print("Sending metrics to the Datadog API.")
         do {
-            try self.metric._send(url: base_url, tags: ["test_host"]) { (error: Error?) in
+            try self.metric._send(url: base_url) { (error: Error?) in
                 print(error!)
             }
         } catch {
@@ -53,7 +54,8 @@ public class Datadog: API {
         } catch {
             fatalError(error.localizedDescription)
         }
-        
+        self.metric.addTags(tags: ["host:ios_device1"])
+        self.event.addTags(tags: ["host:ios_device1"])
         self.timer = Timer.scheduledTimer(timeInterval: self.interval_seconds, target: self, selector: #selector(Datadog.sendData), userInfo: nil, repeats: true)
     }
     

@@ -11,6 +11,7 @@ public struct Metric: Endpoint, Encodable {
     public typealias EndpointDataType = MetricData
     public var endpoint: String = "series"
     var metric_data = [Metric.MetricData]()
+    public var tags: [String] = []
     
     private enum SeriesCodingKeys: String, CodingKey {
         case series
@@ -25,10 +26,7 @@ public struct Metric: Endpoint, Encodable {
         
     }
     
-    internal mutating func _send(url: String, tags: [String], completion:((Error?) -> Void)?) throws {
-        if tags.count > 0 {
-            self.addTags(tags: tags)
-        }
+    internal mutating func _send(url: String, completion:((Error?) -> Void)?) throws {
         let url_to_post = try self.create_url(url: url)
         var request = URLRequest(url: url_to_post)
         request.httpMethod = "POST"

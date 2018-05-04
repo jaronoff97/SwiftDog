@@ -26,14 +26,38 @@ public protocol DataType: Encodable {
 public protocol Endpoint {
     associatedtype EndpointDataType: DataType
     var endpoint: String { get }
+    var tags: [String] { get set }
     mutating func send(series: [EndpointDataType])
 }
 
 extension Endpoint {
-    func create_url(url: String) throws -> URL {
+    internal func create_url(url: String) throws -> URL {
         let api_key = Datadog.dd.keychain[string: "api_key"]
         let app_key = Datadog.dd.keychain[string: "app_key"]
         return URL(string: "https://"+url+self.endpoint + "?api_key=\(api_key!)&application_key=\(app_key!)")!
+    }
+    internal func _send(url_to_post: URL, json: Data, completion:((Error?) -> Void)?) throws {
+        var request = URLRequest(url: url_to_post)
+        request.httpMethod = "POST"
+        var headers = request.allHTTPHeaderFields ?? [:]
+        headers["Content-Type"] = "application/json"
+        request.allHTTPHeaderFields = headers
+        request.httpBody = json
+        let config = URLSessionConfiguration.default
+        let session = URLSession(configuration: config)
+        let task = session.dataTask(with: request) { (responseData, response, responseError) in
+            guard responseError == nil else {
+                completion?(responseError!)
+                return
+            }
+            // APIs usually respond with the data you just sent in your POST request
+            if let data = responseData, let utf8Representation = String(data: data, encoding: .utf8) {
+                print("response: ", utf8Representation)
+            } else {
+                print("no readable data received in response")
+            }
+        }
+        task.resume()
     }
 }
 
