@@ -13,6 +13,6 @@ before_install:
 - pod repo update
 - pod install --project-directory=Example
 script:
-    - xcodebuild clean test -sdk iphonesimulator -workspace SwiftDog.xcworkspace -scheme SwiftDog-Example CODE_SIGNING_REQUIRED=NO
+    - xcodebuild clean test -sdk iphonesimulator -workspace Example/SwiftDog.xcworkspace -scheme SwiftDog-Example CODE_SIGNING_REQUIRED=NO
 after_script:
 - pod lib lint
