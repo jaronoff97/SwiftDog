@@ -2,19 +2,13 @@ PODS:
   - KeychainAccess (3.1.1)
   - Nimble (7.0.3)
   - Quick (1.2.0)
-  - SwiftDog (0.1.0):
+  - SwiftDog (0.0.1):
     - KeychainAccess (~> 3.1)
 
 DEPENDENCIES:
   - Nimble (~> 7.0.2)
   - Quick (~> 1.2.0)
   - SwiftDog (from `../`)
-
-SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - KeychainAccess
-    - Nimble
-    - Quick
 
 EXTERNAL SOURCES:
   SwiftDog:
@@ -24,8 +18,8 @@ SPEC CHECKSUMS:
   KeychainAccess: 7bd430028059754a3debab3cfc0bd1fc7fb85df3
   Nimble: 7f5a9c447a33002645a071bddafbfb24ea70e0ac
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
-  SwiftDog: d177aaf5b6751cb14bbe3af7ee8ab01753eb8ba8
+  SwiftDog: d4904c1b143009c9607c9c3f3ddb5b5184390f72
 
 PODFILE CHECKSUM: 0eca5f0b46e112688516278a104c29ae8963a307
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.2.0
