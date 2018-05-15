@@ -15,18 +15,22 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
+In order to run this library you need to create a file called `datadog_config.plist` with two keys: `api_key` and `app_key`
+
 ## Installation
 
 SwiftDog is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'SwiftDog'
+target 'MyApp' do
+  pod 'SwiftDog', '~> 0.0.1'
+end
 ```
 
 ## Author
 
-jacob.aronoff, jacob.aronoff@datadoghq.com
+Jacob Aronoff, jacobaronoff45@gmail.com
 
 ## License
 
