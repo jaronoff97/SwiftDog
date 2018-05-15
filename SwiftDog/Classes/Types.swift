@@ -80,7 +80,7 @@ extension Endpoint {
         _ = series.map { (item: EndpointDataType) in
             var it = item
             it.tags.append(contentsOf: self.tags)
-            it.host = it.host ?? Datadog.dd.host
+//            it.host = it.host ?? Datadog.dd.host
             endpoint_data.append(it)
         }
     }
