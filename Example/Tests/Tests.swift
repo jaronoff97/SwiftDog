@@ -56,7 +56,7 @@ class EventSpec: QuickSpec {
                     do {
                         let jsonData = try encoder.encode(e)
                         let jsonString = String(data: jsonData, encoding: .utf8)
-                        expect(jsonString!).to(equal("{\"alert_type\":\"info\",\"title\":\"test title\",\"hozxaxst\":\"ios\",\"priority\":\"normal\",\"date_happened\":1525412871,\"text\":\"test text\"}"))
+                        expect(jsonString!).to(equal("{\"alert_type\":\"info\",\"title\":\"test title\",\"host\":\"ios\",\"priority\":\"normal\",\"date_happened\":1525412871,\"text\":\"test text\"}"))
                     } catch {
                         print("should never get here")
                     }
