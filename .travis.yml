@@ -12,5 +12,7 @@ before_install:
 - gem install cocoapods # Since Travis is not always on latest version
 - pod repo update
 - pod install --project-directory=Example
+script:
+    - xcodebuild clean test -sdk iphonesimulator -workspace SwiftDog.xcworkspace -scheme SwiftDog-Example CODE_SIGNING_REQUIRED=NO
 after_script:
 - pod lib lint
