@@ -13,6 +13,7 @@ before_install:
 - pod repo update
 - pod install --project-directory=Example
 script:
-- xctool -workspace Example/SwiftDog.xcworkspace -scheme SwiftDog-Example build test
+- set -o pipefail
+- xcodebuild -workspace Example/SwiftDog.xcworkspace -scheme SwiftDog-Example -sdk iphonesimulator11.3 -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.3' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO clean test | xcpretty -c
 after_script:
 - pod lib lint
