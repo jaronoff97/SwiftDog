@@ -570,10 +570,6 @@
 			baseConfigurationReference = 34DADE0FBB546A1883F387F2 /* Pods-SwiftDog_Tests.debug.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = YQC4GRW9NL;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -592,10 +588,6 @@
 			baseConfigurationReference = BC0DA096F23D490ECD8AC2CD /* Pods-SwiftDog_Tests.release.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = YQC4GRW9NL;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(FRAMEWORK_SEARCH_PATHS)";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
