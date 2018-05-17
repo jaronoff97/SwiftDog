@@ -2,7 +2,7 @@
 
 <img src="https://github.com/jaronoff97/SwiftDog/blob/master/bits-swift-lightbg.svg" width="250">
 
-[![CI Status](https://img.shields.io/travis/jacob.aronoff/SwiftDog.svg?style=flat)](https://travis-ci.org/jaronoff97/SwiftDog)
+[![CI Status](https://travis-ci.org/jaronoff97/SwiftDog.svg?branch=master)](https://travis-ci.org/jaronoff97/SwiftDog)
 [![Version](https://img.shields.io/cocoapods/v/SwiftDog.svg?style=flat)](https://cocoapods.org/pods/SwiftDog)
 [![License](https://img.shields.io/cocoapods/l/SwiftDog.svg?style=flat)](https://cocoapods.org/pods/SwiftDog)
 [![Platform](https://img.shields.io/cocoapods/p/SwiftDog.svg?style=flat)](https://cocoapods.org/pods/SwiftDog)
