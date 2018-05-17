@@ -19,8 +19,8 @@ notifications:
   email:
     recipients:
       - jacobaronoff45@gmail.com
-    on_success: never # default: change
-    on_failure: always # default: always
+    on_success: never
+    on_failure: always
 
 before_install:
 - gem install cocoapods # Since Travis is not always on latest version
