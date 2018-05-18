@@ -2,11 +2,11 @@
 
 public class Datadog: API {
     
-    internal static var base_url: String = "api.datadoghq.com/api/v1/"
-    internal static var interval_seconds: TimeInterval = TimeInterval(10)
     public static var metric: Metric = Metric.metric
-    public static var event: DatadogEvent = DatadogEvent.event
-    private static var timer: Timer = Timer()
+    public static var event: Event = Event.event
+    internal static var base_url: String = "api.datadoghq.com/api/v1/"
+    internal static var timer: Timer = Timer()
+    internal static var interval_seconds: TimeInterval = TimeInterval(10)
     internal static let host = UIDevice.current.identifierForVendor!.uuidString
     internal static let model = UIDevice.current.model
     internal static var use_agent = false

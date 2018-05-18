@@ -54,7 +54,7 @@ extension DataProducer {
         guard let api_key = Datadog.auth?.api_key, let app_key = Datadog.auth?.app_key else {
             throw DatadogAPIError.keyNotSet("Not Authenticated")
         }
-        return URL(string: "https://"+url+self.endpoint + "?api_key=\(api_key)&application_key=\(app_key)")!
+        return URL(string: "https://\(url)\(self.endpoint)?api_key=\(api_key)&application_key=\(app_key)")!
     }
     internal func _send(url_to_post: URL, json: Data, completion:((Error?) -> Void)?) throws {
         guard json.count > 0, self.endpoint_data.count > 0 else {
@@ -74,7 +74,6 @@ extension DataProducer {
                 completion?(responseError!)
                 return
             }
-            // APIs usually respond with the data you just sent in your POST request
             if let data = responseData, let _ = String(data: data, encoding: .utf8) {
                 do {
                     let response_dict = try JSONSerialization.jsonObject(with: data, options: []) as! [String: AnyObject]

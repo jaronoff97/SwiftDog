@@ -6,8 +6,8 @@
 //
 
 
-public struct DatadogEvent: DataProducer {
-    static let event = DatadogEvent()
+public struct Event: DataProducer {
+    static let event = Event()
     public typealias EndpointDataType = EventData
     public var endpoint: String = "events"
     public var tags: [String] = []
