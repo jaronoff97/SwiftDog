@@ -10,7 +10,7 @@ public class Datadog: API {
     internal static let host = UIDevice.current.identifierForVendor!.uuidString
     internal static let model = UIDevice.current.model
     internal static var use_agent = false
-    internal static var auth:DatadogAuthentication? = nil
+    internal static var auth: DatadogAuthentication? = nil
     
     @objc private static func sendData() {
         print("Sending metrics to the Datadog API.")
@@ -30,6 +30,12 @@ public class Datadog: API {
         
     }
     
+    public static func change_interval(new interval: TimeInterval) {
+        self.interval_seconds = interval
+        self.timer.invalidate()
+        self.timer = Timer.scheduledTimer(timeInterval: self.interval_seconds, target: self, selector: #selector(Datadog.sendData), userInfo: nil, repeats: true)
+    }
+    
     public static func initialize_api(with agent:Bool=false, default_tags:Bool=false) {
         self.auth = DatadogAuthentication()
         self.use_agent = agent
@@ -37,7 +43,7 @@ public class Datadog: API {
             self.metric.addTags(tags: ["agent:ios", "model:\(IOSAgent.modelIdentifier())"])
             self.event.addTags(tags: ["agent:ios", "model:\(IOSAgent.modelIdentifier())"])
         }
-        self.timer = Timer.scheduledTimer(timeInterval: self.interval_seconds, target: self, selector: #selector(Datadog.sendData), userInfo: nil, repeats: true)
+        self.change_interval(new: self.interval_seconds)
     }
     
     public static func resetCredentials() {

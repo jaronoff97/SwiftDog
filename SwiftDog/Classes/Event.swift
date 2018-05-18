@@ -13,10 +13,6 @@ public struct Event: DataProducer {
     public var tags: [String] = []
     public var endpoint_data = [EventData]()
     
-    private init() {
-        
-    }
-    
     internal mutating func _send_data(url: String, completion:((Error?) -> Void)?) throws {
         let url_to_post = try self.create_url(url: url)
         let encoder = JSONEncoder()

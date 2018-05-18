@@ -23,10 +23,6 @@ public struct Metric: DataProducer, Encodable {
         try container.encode(endpoint_data, forKey: .series)
     }
     
-    private init() {
-        
-    }
-    
     internal mutating func _send_data(url: String, completion:((Error?) -> Void)?) throws {
         let url_to_post = try self.create_url(url: url)
         let encoder = JSONEncoder()
