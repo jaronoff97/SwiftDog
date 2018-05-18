@@ -15,6 +15,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        Datadog.initialize_api(agent: true, default_tags: true)
         Datadog.metric.send(metric: "ios.device.gauge", points: 1)
         Datadog.metric.send(metric: "ios.device.count", points: 1, host: nil, tags: ["device:test_device"], type: .count(1))
         self.metricValue.delegate = self

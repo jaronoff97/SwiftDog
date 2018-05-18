@@ -28,6 +28,56 @@ target 'MyApp' do
 end
 ```
 
+## Usage
+
+The API currently supports sending metrics and events, with more features coming soon. 
+
+*Currently, retrieving data is not implemented, nor is it in the plan for the future.* 
+
+### Initialization
+
+There are a few ways to initialize the api.
+
+*BE SURE YOU HAVE ADDED `datadog_config.plist`, SEE REQUIREMENTS*
+```swift
+Datadog.initialize_api()
+Datadog.initialize_api(default_tags: true)
+Datadog.initialize_api(agent: true)
+Datadog.initialize_api(agent: true, default_tags: true)
+```
+
+### Sending Metrics
+```swift
+Datadog.metric.send(metric: "ios.device.gauge", points: 1)
+Datadog.metric.send(metric: "ios.test.event.sent", points: 1, type: .count(1))
+Datadog.metric.send(metric: "ios.device.count", points: 1, host: nil, tags: ["device:test_device"], type: .count(1))
+```
+
+You can also create objects to send directly!
+```swift
+let gauge_metric = MetricData(host: nil, tags: ["test:1"], metric_name:"test.metric1", type: MetricData.MetricType.gauge, points: [DataPoint(timestamp: TimeInterval(1525377826.2537289), value: 1)])
+let rate_metric = MetricData(host: "device:fun_ios", tags: ["test:2"], metric_name:"test.metric2", type: MetricData.MetricType.rate(10), points: [DataPoint(timestamp: TimeInterval(1525377828.2537289), value: 2)])
+let count_metric = MetricData(host: "device:another_device", tags: ["test:3"], metric_name:"test.metric3", type: MetricData.MetricType.count(100), points: [DataPoint(timestamp: TimeInterval(1525377820.2537289), value: 3)])
+Datadog.metric.send(series: [gauge_metric, rate_metric, count_metric])
+```
+
+### Sending Events
+```swift
+Datadog.event.send(title: "This is a test event", text: "We can now send events from an iOS device!")
+Datadog.event.send(title: "This is a test event", text: "We can now send events from an iOS device!", tags: ["method:hello"])
+Datadog.event.send(title: "This is a test event", text: "We can now send events from an iOS device!", tags: ["method:hello"], date_happened: Data.currentDate())
+Datadog.event.send(title: "This is a test event", text: "We can now send events from an iOS device!", tags: ["method:hello"], date_happened: Data.currentDate(), priority: .low)
+Datadog.event.send(title: "This is a test event", text: "We can now send events from an iOS device!", tags: ["method:hello"], date_happened: Data.currentDate(), priority: .normal, alert_type: .error)
+Datadog.event.send(title: "This is a test event", text: "We can now send events from an iOS device!", tags: ["method:hello"], date_happened: Data.currentDate(), priority: .normal, alert_type: .error, aggregation_key: "host")
+Datadog.event.send(title: "This is a test event", text: "We can now send events from an iOS device!", tags: ["method:hello"], date_happened: Data.currentDate(), priority: .normal, alert_type: .error, aggregation_key: "host", source_type_name: "mobile")
+```
+
+Like metrics, you can create an event and send it too.
+```swift
+let e: EventData = EventData(host: "ios", tags:[], title: "test title", text: "test text", date_happened: 1525412871, priority: .normal, alert_type: .info, aggregation_key: nil, source_type_name: nil)
+Datadog.event.send(series: [e])
+```
+
 ## Author
 
 Jacob Aronoff, jacobaronoff45@gmail.com

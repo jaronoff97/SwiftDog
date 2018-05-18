@@ -36,7 +36,7 @@ public class Datadog: API {
         self.timer = Timer.scheduledTimer(timeInterval: self.interval_seconds, target: self, selector: #selector(Datadog.sendData), userInfo: nil, repeats: true)
     }
     
-    public static func initialize_api(with agent:Bool=false, default_tags:Bool=false) {
+    public static func initialize_api(agent:Bool=false, default_tags:Bool=false) {
         self.auth = DatadogAuthentication()
         self.use_agent = agent
         if default_tags {
