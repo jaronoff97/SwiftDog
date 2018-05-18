@@ -43,8 +43,8 @@ public struct IOSAgent {
         }
         let data_usage_info = IOSAgent.getDataUsage()
         if IOSAgent.previous_wifi_received != 0 || IOSAgent.previous_wifi_sent != 0 {
-            Datadog.metric.send(metric: "system.net.bytes_sent", points: Float(data_usage_info.wifiReceived - self.previous_wifi_received), host: Datadog.host, tags: [], type: Metric.MetricData.MetricType.rate(Float(Datadog.interval_seconds)))
-            Datadog.metric.send(metric: "system.net.bytes_rcvd", points: Float(data_usage_info.wifiSent - self.previous_wifi_sent), host: Datadog.host, tags: [], type: Metric.MetricData.MetricType.rate(Float(Datadog.interval_seconds)))
+            Datadog.metric.send(metric: "system.net.bytes_sent", points: Float(data_usage_info.wifiReceived - self.previous_wifi_received), host: Datadog.host, tags: [], type: MetricData.MetricType.rate(Float(Datadog.interval_seconds)))
+            Datadog.metric.send(metric: "system.net.bytes_rcvd", points: Float(data_usage_info.wifiSent - self.previous_wifi_sent), host: Datadog.host, tags: [], type: MetricData.MetricType.rate(Float(Datadog.interval_seconds)))
         }
         Datadog.metric.send(metric: "ios.device.battery.level", points: IOSAgent.get_battery_level())
         IOSAgent.previous_wifi_sent = data_usage_info.wifiSent
