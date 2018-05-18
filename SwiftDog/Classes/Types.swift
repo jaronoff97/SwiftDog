@@ -27,6 +27,9 @@ public protocol DataType: Encodable {
     var tags: [String] { get set }
 }
 
+
+
+
 public protocol Endpoint {
     associatedtype EndpointDataType: DataType
     var endpoint: String { get }
@@ -35,10 +38,26 @@ public protocol Endpoint {
 }
 
 extension Endpoint {
+    public mutating func send(series: [EndpointDataType]) {
+        _ = series.map { (item: EndpointDataType) in
+            var it = item
+            it.tags.append(contentsOf: self.tags)
+            endpoint_data.append(it)
+        }
+    }
+}
+
+internal protocol DataProducer: Endpoint {
+    func create_url(url: String) throws -> URL
+    mutating func _send_data(url: String, completion:((Error?) -> Void)?) throws
+}
+
+extension DataProducer {
     internal func create_url(url: String) throws -> URL {
-        let api_key = Datadog.dd.keychain[string: "api_key"]
-        let app_key = Datadog.dd.keychain[string: "app_key"]
-        return URL(string: "https://"+url+self.endpoint + "?api_key=\(api_key!)&application_key=\(app_key!)")!
+        guard let api_key = Datadog.dd.auth?.api_key, let app_key = Datadog.dd.auth?.app_key else {
+            throw DatadogAPIError.keyNotSet("Not Authenticated")
+        }
+        return URL(string: "https://"+url+self.endpoint + "?api_key=\(api_key)&application_key=\(app_key)")!
     }
     internal func _send(url_to_post: URL, json: Data, completion:((Error?) -> Void)?) throws {
         guard json.count > 0, self.endpoint_data.count > 0 else {
@@ -74,15 +93,6 @@ extension Endpoint {
     }
     internal mutating func addTags(tags: [String]) {
         self.tags.append(contentsOf: tags)
-    }
-    
-    public mutating func send(series: [EndpointDataType]) {
-        _ = series.map { (item: EndpointDataType) in
-            var it = item
-            it.tags.append(contentsOf: self.tags)
-//            it.host = it.host ?? Datadog.dd.host
-            endpoint_data.append(it)
-        }
     }
 }
 enum DatadogAPIError: Error {

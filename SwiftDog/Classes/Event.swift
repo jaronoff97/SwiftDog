@@ -6,7 +6,7 @@
 //
 
 
-public struct Event: Endpoint {
+public struct Event: DataProducer {
     static let event = Event()
     public typealias EndpointDataType = EventData
     public var endpoint: String = "events"
@@ -17,7 +17,7 @@ public struct Event: Endpoint {
         
     }
     
-    internal mutating func _send(url: String, completion:((Error?) -> Void)?) throws {
+    internal mutating func _send_data(url: String, completion:((Error?) -> Void)?) throws {
         let url_to_post = try self.create_url(url: url)
         let encoder = JSONEncoder()
         do {

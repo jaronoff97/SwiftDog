@@ -6,7 +6,7 @@
 //
 
 
-public struct Metric: Endpoint, Encodable {
+public struct Metric: DataProducer, Encodable {
     
     static let metric = Metric()
     public typealias EndpointDataType = MetricData
@@ -27,7 +27,7 @@ public struct Metric: Endpoint, Encodable {
         
     }
     
-    internal mutating func _send(url: String, completion:((Error?) -> Void)?) throws {
+    internal mutating func _send_data(url: String, completion:((Error?) -> Void)?) throws {
         let url_to_post = try self.create_url(url: url)
         let encoder = JSONEncoder()
         do {
