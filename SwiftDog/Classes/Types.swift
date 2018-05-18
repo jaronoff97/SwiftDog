@@ -17,18 +17,15 @@ public extension Date {
 }
 
 internal protocol API {
-    var base_url: String { get }
-    var interval_seconds: TimeInterval { get set }
-    func resetCredentials()
+    static var base_url: String { get }
+    static var interval_seconds: TimeInterval { get set }
+    static func resetCredentials()
 }
 
 public protocol DataType: Encodable {
     var host: String? { get set }
     var tags: [String] { get set }
 }
-
-
-
 
 public protocol Endpoint {
     associatedtype EndpointDataType: DataType
@@ -54,7 +51,7 @@ internal protocol DataProducer: Endpoint {
 
 extension DataProducer {
     internal func create_url(url: String) throws -> URL {
-        guard let api_key = Datadog.dd.auth?.api_key, let app_key = Datadog.dd.auth?.app_key else {
+        guard let api_key = Datadog.auth?.api_key, let app_key = Datadog.auth?.app_key else {
             throw DatadogAPIError.keyNotSet("Not Authenticated")
         }
         return URL(string: "https://"+url+self.endpoint + "?api_key=\(api_key)&application_key=\(app_key)")!
