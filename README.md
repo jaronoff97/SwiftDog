@@ -24,7 +24,7 @@ it, simply add the following line to your Podfile:
 
 ```ruby
 target 'MyApp' do
-  pod 'SwiftDog', '~> 0.0.1'
+  pod 'SwiftDog', '~> 0.0.2'
 end
 ```
 
