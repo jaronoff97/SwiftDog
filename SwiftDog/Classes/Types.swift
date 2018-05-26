@@ -17,9 +17,9 @@ public extension Date {
 }
 
 internal protocol API {
-    var base_url: String { get }
-    var interval_seconds: TimeInterval { get set }
-    func resetCredentials()
+    static var base_url: String { get }
+    static var interval_seconds: TimeInterval { get set }
+    static func resetCredentials()
 }
 
 public protocol DataType: Encodable {
@@ -35,10 +35,26 @@ public protocol Endpoint {
 }
 
 extension Endpoint {
+    public mutating func send(series: [EndpointDataType]) {
+        _ = series.map { (item: EndpointDataType) in
+            var it = item
+            it.tags.append(contentsOf: self.tags)
+            endpoint_data.append(it)
+        }
+    }
+}
+
+internal protocol DataProducer: Endpoint {
+    func create_url(url: String) throws -> URL
+    mutating func _send_data(url: String, completion:((Error?) -> Void)?) throws
+}
+
+extension DataProducer {
     internal func create_url(url: String) throws -> URL {
-        let api_key = Datadog.dd.keychain[string: "api_key"]
-        let app_key = Datadog.dd.keychain[string: "app_key"]
-        return URL(string: "https://"+url+self.endpoint + "?api_key=\(api_key!)&application_key=\(app_key!)")!
+        guard let api_key = Datadog.auth?.api_key, let app_key = Datadog.auth?.app_key else {
+            throw DatadogAPIError.keyNotSet("Not Authenticated")
+        }
+        return URL(string: "https://\(url)\(self.endpoint)?api_key=\(api_key)&application_key=\(app_key)")!
     }
     internal func _send(url_to_post: URL, json: Data, completion:((Error?) -> Void)?) throws {
         guard json.count > 0, self.endpoint_data.count > 0 else {
@@ -58,7 +74,6 @@ extension Endpoint {
                 completion?(responseError!)
                 return
             }
-            // APIs usually respond with the data you just sent in your POST request
             if let data = responseData, let _ = String(data: data, encoding: .utf8) {
                 do {
                     let response_dict = try JSONSerialization.jsonObject(with: data, options: []) as! [String: AnyObject]
@@ -74,15 +89,6 @@ extension Endpoint {
     }
     internal mutating func addTags(tags: [String]) {
         self.tags.append(contentsOf: tags)
-    }
-    
-    public mutating func send(series: [EndpointDataType]) {
-        _ = series.map { (item: EndpointDataType) in
-            var it = item
-            it.tags.append(contentsOf: self.tags)
-//            it.host = it.host ?? Datadog.dd.host
-            endpoint_data.append(it)
-        }
     }
 }
 enum DatadogAPIError: Error {

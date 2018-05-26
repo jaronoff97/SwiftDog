@@ -22,8 +22,8 @@ internal struct DataUsageInfo {
 }
 
 public struct IOSAgent {
-    static let count:natural_t = mach_msg_type_number_t(MemoryLayout<host_cpu_load_info>.size / MemoryLayout<integer_t>.size)
-    static let machHost:mach_port_t = mach_host_self()
+    private static let count:natural_t = mach_msg_type_number_t(MemoryLayout<host_cpu_load_info>.size / MemoryLayout<integer_t>.size)
+    private static let machHost:mach_port_t = mach_host_self()
     
     private static var previous_info: host_cpu_load_info = host_cpu_load_info()
     private static let wwanInterfacePrefix = "pdp_ip"
@@ -34,19 +34,19 @@ public struct IOSAgent {
     
     internal static func send_agent_metrics() {
         if let cpu_usage = IOSAgent.current_CPU() {
-            Datadog.dd.metric.send(metric: "system.cpu.user", points: Float(cpu_usage["user"]!), host: Datadog.dd.host, tags: [], type: .gauge)
-            Datadog.dd.metric.send(metric: "system.cpu.idle", points: Float(cpu_usage["idle"]!), host: Datadog.dd.host, tags: [], type: .gauge)
-            Datadog.dd.metric.send(metric: "system.cpu.system", points: Float(cpu_usage["system"]!), host: Datadog.dd.host, tags: [], type: .gauge)
+            Datadog.metric.send(metric: "system.cpu.user", points: Float(cpu_usage["user"]!), host: Datadog.host, tags: [], type: .gauge)
+            Datadog.metric.send(metric: "system.cpu.idle", points: Float(cpu_usage["idle"]!), host: Datadog.host, tags: [], type: .gauge)
+            Datadog.metric.send(metric: "system.cpu.system", points: Float(cpu_usage["system"]!), host: Datadog.host, tags: [], type: .gauge)
         }
         if let mem_usage = IOSAgent.current_MEM() {
-            Datadog.dd.metric.send(metric: "system.mem.used", points: mem_usage, host: Datadog.dd.host, tags: [], type: .gauge)
+            Datadog.metric.send(metric: "system.mem.used", points: mem_usage, host: Datadog.host, tags: [], type: .gauge)
         }
         let data_usage_info = IOSAgent.getDataUsage()
         if IOSAgent.previous_wifi_received != 0 || IOSAgent.previous_wifi_sent != 0 {
-            Datadog.dd.metric.send(metric: "system.net.bytes_sent", points: Float(data_usage_info.wifiReceived - self.previous_wifi_received), host: Datadog.dd.host, tags: [], type: Metric.MetricData.MetricType.rate(Float(Datadog.dd.interval_seconds)))
-            Datadog.dd.metric.send(metric: "system.net.bytes_rcvd", points: Float(data_usage_info.wifiSent - self.previous_wifi_sent), host: Datadog.dd.host, tags: [], type: Metric.MetricData.MetricType.rate(Float(Datadog.dd.interval_seconds)))
+            Datadog.metric.send(metric: "system.net.bytes_sent", points: Float(data_usage_info.wifiReceived - self.previous_wifi_received), host: Datadog.host, tags: [], type: MetricData.MetricType.rate(Float(Datadog.interval_seconds)))
+            Datadog.metric.send(metric: "system.net.bytes_rcvd", points: Float(data_usage_info.wifiSent - self.previous_wifi_sent), host: Datadog.host, tags: [], type: MetricData.MetricType.rate(Float(Datadog.interval_seconds)))
         }
-        Datadog.dd.metric.send(metric: "ios.device.battery.level", points: IOSAgent.get_battery_level())
+        Datadog.metric.send(metric: "ios.device.battery.level", points: IOSAgent.get_battery_level())
         IOSAgent.previous_wifi_sent = data_usage_info.wifiSent
         IOSAgent.previous_wifi_received = data_usage_info.wifiReceived
     }
@@ -60,11 +60,8 @@ public struct IOSAgent {
     
     internal static func getDataUsage() -> DataUsageInfo {
         var interfaceAddresses: UnsafeMutablePointer<ifaddrs>? = nil
-        
         var dataUsageInfo = DataUsageInfo()
-        
         guard getifaddrs(&interfaceAddresses) == 0 else { return dataUsageInfo }
-        
         var pointer = interfaceAddresses
         while pointer != nil {
             guard let info = IOSAgent.getDataUsageInfo(from: pointer!) else {
@@ -74,26 +71,21 @@ public struct IOSAgent {
             dataUsageInfo.updateInfoByAdding(info: info)
             pointer = pointer!.pointee.ifa_next
         }
-        
         freeifaddrs(interfaceAddresses)
-        
         return dataUsageInfo
     }
     
     private static func getDataUsageInfo(from infoPointer: UnsafeMutablePointer<ifaddrs>) -> DataUsageInfo? {
         let pointer = infoPointer
-        
         let name: String! = String(cString: infoPointer.pointee.ifa_name)
         let addr = pointer.pointee.ifa_addr.pointee
         guard addr.sa_family == UInt8(AF_LINK) else { return nil }
-        
         return dataUsageInfo(from: pointer, name: name)
     }
     
     private static func dataUsageInfo(from pointer: UnsafeMutablePointer<ifaddrs>, name: String) -> DataUsageInfo {
         var networkData: UnsafeMutablePointer<if_data>? = nil
         var dataUsageInfo = DataUsageInfo()
-        
         if name.hasPrefix(IOSAgent.wifiInterfacePrefix) {
             networkData = unsafeBitCast(pointer.pointee.ifa_data, to: UnsafeMutablePointer<if_data>.self)
             dataUsageInfo.wifiSent += networkData?.pointee.ifi_obytes ?? 0
@@ -103,7 +95,6 @@ public struct IOSAgent {
             dataUsageInfo.wirelessWanDataSent += networkData?.pointee.ifi_obytes ?? 0
             dataUsageInfo.wirelessWanDataReceived += networkData?.pointee.ifi_ibytes ?? 0
         }
-        
         return dataUsageInfo
     }
     
@@ -116,7 +107,6 @@ public struct IOSAgent {
 
     
     internal static func current_MEM() -> Float? {
-        
         var taskInfo = mach_task_basic_info()
         var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size)/4
         let kerr: kern_return_t = withUnsafeMutablePointer(to: &taskInfo) {
@@ -144,25 +134,19 @@ public struct IOSAgent {
                 host_statistics(machHost, HOST_CPU_LOAD_INFO, $0, &count)
             }
         }
-        
         guard result == KERN_SUCCESS else {
             return nil
         }
-        
         let userDiff = Double(info.cpu_ticks.0 - previous_info.cpu_ticks.0)
         let sysDiff  = Double(info.cpu_ticks.1 - previous_info.cpu_ticks.1)
         let idleDiff = Double(info.cpu_ticks.2 - previous_info.cpu_ticks.2)
         let niceDiff = Double(info.cpu_ticks.3 - previous_info.cpu_ticks.3)
-        
         previous_info = info
-        
         let totalTicks = sysDiff + userDiff + niceDiff + idleDiff
-        
         let sys  = sysDiff  / totalTicks * 100.0
         let user = userDiff / totalTicks * 100.0
         let idle = idleDiff / totalTicks * 100.0
         let nice = niceDiff / totalTicks * 100.0
-        
         return ["user": user,
                 "system": sys,
                 "idle": idle,

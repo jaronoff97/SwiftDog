@@ -15,8 +15,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        Datadog.dd.metric.send(metric: "ios.device.gauge", points: 1)
-        Datadog.dd.metric.send(metric: "ios.device.count", points: 1, host: nil, tags: ["device:test_device"], type: .count(1))
+        Datadog.initialize_api(agent: true, default_tags: true)
+        Datadog.metric.send(metric: "ios.device.gauge", points: 1)
+        Datadog.metric.send(metric: "ios.device.count", points: 1, host: nil, tags: ["device:test_device"], type: .count(1))
         self.metricValue.delegate = self
     }
     
@@ -30,13 +31,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func sendEvent(_ sender: Any) {
-        Datadog.dd.event.send(title: "This is a test event", text: "We can now send events from an iOS device!")
-        Datadog.dd.metric.send(metric: "ios.test.event.sent", points: 1, type: .count(1))
+        Datadog.event.send(title: "This is a test event", text: "We can now send events from an iOS device!")
+        Datadog.metric.send(metric: "ios.test.event.sent", points: 1, type: .count(1))
     }
     
     @IBAction func sendMetric(_ sender: Any) {
         if let metric_value = Int(metricValue.text!) {
-            Datadog.dd.metric.send(metric: "ios.test.value", points: Float(metric_value), type: .gauge)
+            Datadog.metric.send(metric: "ios.test.value", points: Float(metric_value), type: .gauge)
         }
     }
     
@@ -48,7 +49,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
     }
     @IBAction func resetCredentials(_ sender: Any) {
-        Datadog.dd.resetCredentials()
+        Datadog.resetCredentials()
     }
     
     @IBAction func sendTimedData(_ sender: Any) {
@@ -57,7 +58,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         let end = DispatchTime.now()
         let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
         let timeInterval = Double(nanoTime) / 1_000_000_000
-        Datadog.dd.metric.send(metric: "ios.test.fib.timing", points: Float(timeInterval))
+        Datadog.metric.send(metric: "ios.test.fib.timing", points: Float(timeInterval))
 
     }
     
