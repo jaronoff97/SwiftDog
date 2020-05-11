@@ -5,6 +5,7 @@
 //  Created by jacob.aronoff on 5/3/18.
 //
 
+import Foundation
 
 public struct Metric: DataProducer, Encodable {
     

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 internal struct DataUsageInfo {
     var wifiReceived: UInt32 = 0

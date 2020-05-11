@@ -1,3 +1,5 @@
+import Foundation
+import UIKit
 
 
 public class Datadog: API {
