@@ -19,6 +19,14 @@ In order to run this library you need to create a file called `datadog_config.pl
 
 ## Installation
 
+### Swift Package Manager
+
+SwiftDog is availabe through [Swift Package Manager](https://swift.org/package-manager/). To install
+it, simply add `https://github.com/jaronoff97/SwiftDog.git` as a Package Dependency in Xcode by navigating
+to `File -> Swift Packages -> Add Package Dependency...`.
+
+### Carthage
+
 SwiftDog is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 

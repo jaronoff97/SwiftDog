@@ -5,6 +5,7 @@
 //  Created by jacob.aronoff on 5/4/18.
 //
 
+import Foundation
 
 public struct Event: DataProducer {
     static let event = Event()

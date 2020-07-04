@@ -5,6 +5,8 @@
 //  Created by jacob.aronoff on 5/3/18.
 //
 
+import Foundation
+
 public typealias DataPoint = (TimeInterval, Float)
 
 public extension Date {
